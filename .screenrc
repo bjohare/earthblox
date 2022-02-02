@@ -1,0 +1,14 @@
+term xterm
+
+screen -t code 
+screen -t docker
+
+#hardstatus alwayslastline "%{=b}%{G} Screen(s): %{b}%w %=%{kG}%C%A  %D, %d/%m/%Y "
+hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %d/%m %{W}%c %{g}]'
+hardstatus alwayslastline
+
+startup_message off
+
+msgwait 1
+
+select 0

@@ -1,0 +1,67 @@
+version: '3.4'
+
+volumes:
+    postgis_data: {}
+
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./compose/production/Dockerfile # relative to build context
+    container_name: earthblox_backend
+    depends_on:
+      - postgres
+    volumes:
+      - ./backend:/app
+    command: sh -c "/wait && /gunicorn.sh"
+    restart: on-failure
+    env_file: .env
+    environment:
+      WAIT_HOSTS: pgbouncer:5439
+
+  postgres:
+    image: kartoza/postgis:12.1
+    container_name: earthblox_postgres
+    volumes:
+       - postgis_data:/var/lib/postgresql
+    restart: unless-stopped
+    env_file: .env
+
+  pgbouncer:
+    image: pgbouncer/pgbouncer
+    container_name: earthblox_frontend
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    ports:
+      - "5439:5439"
+    env_file: .env
+    environment:
+      WAIT_HOSTS: postgres:5432
+    logging:
+      driver: none
+
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    container_name: earthblox_nginx
+    ports:
+      - "8000:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./backend/media/:/media/
+      - ./backend/staticfiles/:/staticfiles/
+      - ./nginx/prod.conf:/etc/nginx/nginx.conf:ro
+
+
+
+
+  redis:
+    image: redis:3.0
+    container_name: earthblox_redis
+    restart: unless-stopped
+    logging:
+      driver: none

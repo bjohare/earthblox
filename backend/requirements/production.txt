@@ -1,0 +1,12 @@
+-r base.txt
+
+
+# WSGI Handler
+# ------------------------------------------------
+gevent==21.1.2
+greenlet==1.0.0
+gunicorn==20.1.0
+
+# Email backends Amazon SES
+# ------------------------------------------------
+django-ses==2.3.1
