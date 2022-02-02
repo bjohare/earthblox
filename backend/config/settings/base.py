@@ -45,6 +45,7 @@ THIRD_PARTY_APPS = [
     'rest_auth',
     'rest_auth.registration',
     'django_filters',
+    'django_countries',
 ]
 
 LOCAL_APPS = [
