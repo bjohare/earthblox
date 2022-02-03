@@ -1,42 +1,67 @@
 import axios from 'axios'
 
+let authAxios = axios.create({
+  xsrfCookieName: "csrftoken",
+  xsrfHeaderName: "X-CSRFToken",
+  withCredentials: true
+});
+
 const state = {
   loggedIn: false,
   profile: {},
-  validation: {email: true},
+  validation: { email: true },
   authError: false
 }
 
-const getters = {}
+const getters = {
+  getProfile(state) {
+    return state.profile;
+  },
+  isLoggedIn(state) {
+    return state.loggedIn;
+  }
+};
 
 const mutations = {
-  login (state) {
+  login(state) {
     state.loggedIn = true
   },
-  logout (state) {
+  logout(state) {
     state.loggedIn = false
   },
-  setProfile (state, payload) {
+  setProfile(state, payload) {
     state.profile = payload
   },
-  setValidationEmail (state, bool) {
+  setValidationEmail(state, bool) {
     state.validation.email = bool
   },
-  setAuthError (state, bool) {
+  setAuthError(state, bool) {
     state.authError = bool
   }
 }
 
 const actions = {
-  postLogin (context, payload) {
-    return axios.post('/api/users/login/', payload)
-      .then(response => {})
-      .catch(e => {
-        context.commit('setAuthError', true)
-        console.log(e)
-      })
+  async postLogin({ dispatch, commit }, payload) {
+    return authAxios.post("/api/users/login/", payload).then(response => {
+      dispatch("getProfile");
+    }).catch(e => {
+      context.commit('setAuthError', true)
+      console.log(e)
+    });
   },
-  postRegister (context, payload) {
+  async postLogout({ commit, dispatch }, vm) {
+    return authAxios
+      .post("/api/users/logout/")
+      .then(response => {
+        commit("logout");
+        commit("setProfile", {});
+      })
+      .catch(e => {
+        commit("setAuthError", true);
+        console.log(e);
+      });
+  },
+  async postRegister(context, payload) {
     return axios.post('/api/users/register/', payload)
       .then(response => {
         if (response.data.status === 210) {
@@ -49,16 +74,17 @@ const actions = {
       })
       .catch(e => { console.log(e) })
   },
-  getProfile (context) {
-    return axios.get('/api/users/profile')
+  async getProfile(context) {
+    return await authAxios
+      .get("/api/users/profile/")
       .then(response => {
-        context.commit('login')
-        context.commit('setProfile', response.data)
+        context.commit("login");
+        context.commit("setProfile", response.data);
       })
       .catch(e => {
-        context.commit('logout')
-        console.log(e)
-      })
+        context.commit("logout");
+        console.log(e);
+      });
   }
 }
 

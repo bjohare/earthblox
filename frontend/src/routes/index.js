@@ -3,7 +3,10 @@ import VueRouter from "vue-router";
 
 import Login from "@/views/users/Login.vue"
 import Logout from "@/views/users/Logout.vue"
+import Register from "@/views/suppliers/Register.vue"
 import NotFound from "@/views/404.vue"
+
+import store from "@/store"
 
 const routes = [
   {
@@ -20,6 +23,14 @@ const routes = [
     path: "/logout",
     name: "Logout",
     component: Logout
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: Register,
+    meta: {
+      requiresAuth: true
+    }
   }
 ];
 
@@ -31,6 +42,18 @@ const router = new VueRouter({
   },
   mode: "history",
   routes
+});
+
+router.beforeEach(async (to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (store.getters.isLoggedIn) {
+      next();
+    } else {
+      next("/");
+    }
+  } else {
+    next();
+  }
 });
 
 export default router

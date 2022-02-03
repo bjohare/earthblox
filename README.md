@@ -1,6 +1,6 @@
-# EarthBlox Drone Supplier Registration
+# Earth Blox Drone Supplier Registration
 
-A full-stack demonstration application consisting of a `Vue.js` SPA frontend, a `django` middleware and a `postgres/postgis` database. The application also provides a [MailHog](https://github.com/mailhog/MailHog) docker instance for email testing as well as a `pgbouncer` instance for postgres connecion pooling and a `redis` instance for http caching.
+A full-stack demonstration application consisting of a `Vue.js` SPA frontend, a `django` middleware and a `postgres/postgis` database. The application also provides a [MailHog](https://github.com/mailhog/MailHog) docker instance for email testing as well as a [pgbouncer](https://www.pgbouncer.org/) instance for postgres connecion pooling and a [Redis](https://redis.io/) instance for http caching.
 
 ## Development
 
@@ -16,4 +16,4 @@ It will take a while to pull the docker containers and build the frontend. Once 
 
 ## Users
 
-Two users are created by default. A admin (superuser) with login `admin@admin.com` password `admin`, and a demo user with a login of `demo@demo.com` password `demo'.
+Two users are created by default. A admin (superuser) with login `admin@admin.com` password `admin`, and a demo user with a login of `demo@demo.com` password `demo`.

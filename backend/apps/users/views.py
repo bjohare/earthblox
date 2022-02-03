@@ -1,52 +1,48 @@
 import requests
 from uuid import uuid4
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.shortcuts import get_object_or_404
 
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from apps.users.models import User
-from apps.users.serializers import UserSerializer, UserWriteSerializer
+from apps.users.serializers import UserSerializer
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = []
 
-    def get_serializer_class(self):
-        if self.action in ['list', 'retrieve']:
-            return UserSerializer
-        return UserWriteSerializer
+    def list(self, request):
+        if request.user.is_authenticated and request.user.is_superuser:
+            queryset = User.objects.all()
+            serializer = UserSerializer(queryset, many=True)
+            return Response(serializer.data)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-    def perform_create(self, serializer):
-        user = serializer.save()
-        user.set_password(self.request.data.get('password'))
-        user.save()
+    def retrieve(self, request, pk=None):
+        if request.user.is_authenticated and request.user.is_superuser:
+            queryset = User.objects.all()
+            user = get_object_or_404(queryset, pk=pk)
+            serializer = UserSerializer(user)
+            return Response(serializer.data)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-    def perform_update(self, serializer):
-        user = serializer.save()
-        if 'password' in self.request.data:
-            user.set_password(self.request.data.get('password'))
-            user.save()
-
-    def perform_destroy(self, instance):
-        instance.is_active = False
-        instance.save()
-
-    @action(methods=['GET'], detail=False)
+    @action(detail=False, methods=['get'])
     def profile(self, request):
         if request.user.is_authenticated:
             serializer = self.serializer_class(request.user)
             return Response(status=status.HTTP_200_OK, data=serializer.data)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-    @action(methods=['POST'], detail=False)
+    @action(detail=False, methods=['post'])
     def login(self, request, format=None):
         email = request.data.get('email', None)
         password = request.data.get('password', None)
@@ -55,29 +51,19 @@ class UserViewSet(viewsets.ModelViewSet):
         if user:
             login(request, user)
             return Response(status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    @action(methods=['POST'], detail=False)
-    def register(self, request):
-        last_name = request.data.get('last_name', None)
-        first_name = request.data.get('first_name', None)
-        email = request.data.get('email', None)
-        password = request.data.get('password', None)
-
-        if User.objects.filter(email__iexact=email).exists():
-            return Response({'status': 210})
-
-        # user creation
-        user = User.objects.create(
-            email=email,
-            password=password,
-            last_name=last_name,
-            first_name=first_name,
-            is_admin=False,
+        return Response(
+            {'message': 'Invalid login'},
+            status=status.HTTP_403_FORBIDDEN,
         )
-        return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
 
-    @action(methods=['POST'], detail=False)
+    @action(detail=False, methods=['post'])
+    def logout(self, request, format=None):
+        if request.user.is_authenticated:
+            logout(request)
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+    @action(detail=False, methods=['post'])
     def password_reset(self, request, format=None):
         if User.objects.filter(email=request.data['email']).exists():
             user = User.objects.get(email=request.data['email'])
@@ -92,7 +78,7 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    @action(methods=['POST'], detail=False)
+    @action(detail=False, methods=['post'])
     def password_change(self, request, format=None):
         if User.objects.filter(token=request.data['token']).exists():
             user = User.objects.get(token=request.data['token'])

@@ -100,9 +100,9 @@ export default {
               email: this.email,
               password: this.password
             });
-            this.$router.replace(this.$route.query.redirect || "/portal");
+            this.$router.replace(this.$route.query.redirect || "/register");
           } catch (error) {
-            if (error.response) {
+            if (error) {
               this.invalidLogin = true;
             }
           }
