@@ -1,19 +1,19 @@
-earthblox
-=========
+# EarthBlox Drone Supplier Registration
 
-EarthBlox Drone Supplier Registration
-
-<a href="https://github.com/vchaptsev/cookiecutter-django-vue">
-    <img src="https://img.shields.io/badge/built%20with-Cookiecutter%20Django%20Vue-blue.svg" />
-</a>
-
+A full-stack demonstration application consisting of a `Vue.js` SPA frontend, a `django` middleware and a `postgres/postgis` database. The application also provides a [MailHog](https://github.com/mailhog/MailHog) docker instance for email testing as well as a `pgbouncer` instance for postgres connecion pooling and a `redis` instance for http caching.
 
 ## Development
 
-Install [Docker](https://docs.docker.com/install/) and [Docker-Compose](https://docs.docker.com/compose/). Start your virtual machines with the following shell command:
+Install [Docker](https://docs.docker.com/install/) and [Docker-Compose](https://docs.docker.com/compose/).
 
-`docker-compose up --build`
+To checkout the code run `git clone git@github.com:bjohare/earthblox.git`
 
-If all works well, you should be able to create an admin account with:
+To build and run a local instance of the stack do (from the local repo root):
 
-`docker-compose run backend python manage.py createsuperuser`
+`docker-compose -f local.yml up --build`
+
+It will take a while to pull the docker containers and build the frontend. Once built the application will available at http://localhost:8000.
+
+## Users
+
+Two users are created by default. A admin (superuser) with login `admin@admin.com` password `admin`, and a demo user with a login of `demo@demo.com` password `demo'.

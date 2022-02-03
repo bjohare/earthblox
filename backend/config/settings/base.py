@@ -252,3 +252,11 @@ SERIALIZATION_MODULES = {
 
 # Grapellie admin settings
 GRAPPELLI_ADMIN_TITLE = 'Earthblox Administration'
+
+# Default Users
+
+ADMIN_USER_EMAIL = env.str('ADMIN_USER_EMAIL', 'admin@admin.com')
+ADMIN_USER_PASS = env.str('ADMIN_USER_PASS', 'admin')
+
+DEMO_USER_EMAIL = env.str('DEMO_USER_EMAIL', 'demo@demo.com')
+DEMO_USER_PASS = env.str('DEMO_USER_PASS', 'demo')
