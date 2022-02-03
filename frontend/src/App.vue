@@ -1,11 +1,20 @@
 <template lang="html">
   <div>
-    <router-view/>
+    <app-main></app-main>
   </div>
 </template>
 
 <script>
+import Main from "@/containers/Main.vue";
 export default {
-  name: 'App'
-}
+  name: "App",
+  components: {
+    appMain: Main
+  }
+};
 </script>
+<style>
+:focus {
+    outline: 0px transparent !important;
+}
+</style>

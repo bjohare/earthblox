@@ -1,12 +1,12 @@
-// jsconfig.json
 {
   "compilerOptions": {
-      "target": "ES6",
-      "module": "commonjs",
-      "allowSyntheticDefaultImports": true,
-      "baseUrl": "./",
-      "paths": {
-        "@/*": ["frontend/src/*"],
-      }
+    "target": "ES6",
+    "module": "commonjs",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["frontend/src/*"]
+    },
+    "include": ["frontend/src/**/*"]
   }
 }
