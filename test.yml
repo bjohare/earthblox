@@ -1,0 +1,84 @@
+version: "3.4"
+
+volumes:
+  postgis_data:
+    name: ${POSTGRES_DOCKER_VOLUME_NAME}_test
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./compose/local/Dockerfile # relative to build context
+    container_name: earthblox_backend
+    depends_on:
+      - postgres
+      - pgbouncer
+    volumes:
+      - ./backend:/app
+    command: sh -c "/wait && /start.sh"
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      WAIT_HOSTS: pgbouncer:5439
+
+  frontend:
+    image: node:10-alpine
+    container_name: earthblox_frontend
+    command: npm run serve
+    volumes:
+      - ./.env:/app/.env:ro
+      - ./frontend:/app
+    working_dir: /app
+    restart: unless-stopped
+
+  postgres:
+    image: kartoza/postgis:12.1
+    container_name: earthblox_postgres
+    volumes:
+      - postgis_data:/var/lib/postgresql
+    restart: unless-stopped
+    env_file: .env
+
+  pgbouncer:
+    image: pgbouncer/pgbouncer
+    container_name: earthblox_pgbouncer
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    ports:
+      - "5439:5439"
+    env_file: .env
+    environment:
+      WAIT_HOSTS: postgres:5432
+    logging:
+      driver: none
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: earthblox_mailhog
+    ports:
+      - "8025:8025"
+    logging:
+      driver: none
+
+  nginx:
+    image: nginx:alpine
+    container_name: earthblox_nginx
+    ports:
+      - "8000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    volumes:
+      - ./backend/media/:/media/
+      - ./backend/staticfiles/:/staticfiles/
+      - ./nginx/dev.conf:/etc/nginx/nginx.conf:ro
+    logging:
+      driver: none
+
+  redis:
+    image: redis:3.0
+    container_name: earthblox_redis
+    restart: unless-stopped
+    logging:
+      driver: none

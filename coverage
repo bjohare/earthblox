@@ -1,0 +1,14 @@
+#! /bin/bash
+
+if [ -z "$1" ]
+then
+  report='report'
+  printf "\nGenerating console report. \n\n"
+else
+  report=$1
+  printf "\nGenerating $1 report. \n\n"
+fi
+
+
+
+docker-compose -f test.yml run --rm backend coverage $report

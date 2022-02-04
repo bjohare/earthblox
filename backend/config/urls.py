@@ -10,5 +10,8 @@ urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
     path('logout/', logout, {'next_page': '/'}, name='logout'),
     path('api/', include(api.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api-auth/', include('rest_framework.urls',
+                              namespace='rest_framework')),
+    path('api/suppliers/', include('apps.suppliers.urls',
+                                   namespace='suppliers')),
 ]

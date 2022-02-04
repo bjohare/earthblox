@@ -27,7 +27,7 @@
                     />
                     <b-form-invalid-feedback id="email">
                       <ul>
-                        <li v-for="error in errors.collect('email')">{{ error }}</li>
+                        <li v-for="error in errors.collect('email')" :key="error">{{ error }}</li>
                       </ul>
                     </b-form-invalid-feedback>
                   </b-input-group>
@@ -42,10 +42,11 @@
                       v-validate="'required'"
                       :state="validateState('password')"
                       @input="invalidLogin = false"
+                      @keydown.enter.native="login()"
                     />
                     <b-form-invalid-feedback id="password">
                       <ul>
-                        <li v-for="error in errors.collect('password')">{{ error }}</li>
+                        <li v-for="error in errors.collect('password')" :key="error">{{ error }}</li>
                       </ul>
                     </b-form-invalid-feedback>
                   </b-input-group>
