@@ -1,9 +1,13 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from apps.suppliers.models import Supplier
+from apps.users.models import User
 
 
 class TestSupplier(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.get(email='demo@demo.com')
 
     def test_create_supplier(self):
         """Tests model creation with valid data."""
@@ -64,6 +68,18 @@ class TestSupplier(TestCase):
             self.assertIsNotNone(e.message_dict.get('consent'))
             message = e.message_dict.get('consent', None)
             assert message == ['“None” value must be either True or False.']
+
+    def test_create_supplier_with_created_by_user(self):
+        data = {
+            'company_name': 'Test Company', 'contact_name': 'Test Contact',
+            'email': 'demo@demo.com', 'countries': ['GB', 'US'],
+            'datatypes': ['GP', 'GC'], 'consent': True, 'certified': True,
+            'created_by': self.user
+        }
+        supplier = Supplier(**data)
+        supplier.save()
+        supplier.refresh_from_db()
+        assert supplier.created_by == self.user
 
     def test_datatypes_enum(self):
         geotagged_photos = Supplier.DATATYPES.get_value('geotagged_photos')

@@ -1,19 +1,35 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from apps.users.models import User
 
 
 class RegisterSupplierAPIViewTest(APITestCase):
 
-    def get_response(self, data, *args, **kwargs):
+    def get_response(self, data, authenticate=True):
         url = reverse('suppliers:register-supplier')
+        if authenticate:
+            self.client.login(username='demo@demo.com', password='demo')
         return self.client.post(url, data, format='json')
 
-    def test_create_supplier(self):
+    def test_user_not_authenticated(self):
         data = {
             'company_name': 'Test Company', 'contact_name': 'Test Contact',
             'email': 'demo@demo.com', 'consent': True, 'certified': True,
             'datatypes': ['GC'], 'countries': ['GB', 'IE', 'US']
+        }
+        response = self.get_response(data, authenticate=False)
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+        assert response.json() == {
+            'detail': 'Authentication credentials were not provided.'}
+
+    def test_create_supplier(self):
+        user = User.objects.get(email='demo@demo.com')
+        data = {
+            'company_name': 'Test Company', 'contact_name': 'Test Contact',
+            'email': 'demo@demo.com', 'consent': True, 'certified': True,
+            'datatypes': ['GC'], 'countries': ['GB', 'IE', 'US'],
+            'created_by': user.id
         }
         response = self.get_response(data)
         assert response.status_code == status.HTTP_201_CREATED
@@ -22,7 +38,8 @@ class RegisterSupplierAPIViewTest(APITestCase):
                                    "email": "demo@demo.com",
                                    "datatypes": ["GC"],
                                    "countries": ["GB", "IE", "US"],
-                                   "consent": True, "certified": True}
+                                   "consent": True, "certified": True,
+                                   'created_by': user.id, 'modified_by': None}
 
     def test_create_supplier_with_missing_data(self):
         """Test for missing fields."""
@@ -33,6 +50,7 @@ class RegisterSupplierAPIViewTest(APITestCase):
             'datatypes': ['GC'], 'countries': ['GB', 'IE', 'US']
         }
         response = self.get_response(data)
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json() == {
             'email': ['This field is required.'],
             'company_name': ['This field is required.'],
@@ -47,6 +65,7 @@ class RegisterSupplierAPIViewTest(APITestCase):
             'datatypes': ['XY'], 'countries': ['GB', 'IE', 'US']
         }
         response = self.get_response(data)
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json() == {'datatypes': {
             '0': ['"XY" is not a valid choice.']}}
 
@@ -58,6 +77,7 @@ class RegisterSupplierAPIViewTest(APITestCase):
             'datatypes': ['GC'], 'countries': ['XY']
         }
         response = self.get_response(data)
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json() == {'countries': {
             '0': ['"XY" is not a valid choice.']}}
 
@@ -70,6 +90,7 @@ class RegisterSupplierAPIViewTest(APITestCase):
             'datatypes': ['GC'], 'countries': ['GB', 'IE', 'US']
         }
         response = self.get_response(data)
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json() == {'consent': ['This field is required.']}
 
     def test_create_supplier_with_missing_certified(self):
@@ -81,4 +102,5 @@ class RegisterSupplierAPIViewTest(APITestCase):
             'datatypes': ['GC'], 'countries': ['GB', 'IE', 'US']
         }
         response = self.get_response(data)
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json() == {'certified': ['This field is required.']}

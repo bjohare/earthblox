@@ -1,5 +1,7 @@
-from tabnanny import verbose
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.conf import settings
 from django.utils.translation import gettext as _
 from model_utils.models import TimeStampedModel
 from django.contrib.postgres.fields import ArrayField
@@ -51,6 +53,16 @@ class Supplier(TimeStampedModel):
         multiple=True, verbose_name=_('Operating Countries'), default="GB")
     consent = models.BooleanField(verbose_name=_('Consent'))
     certified = models.BooleanField(verbose_name=_('Certified'))
+    created_by = models.OneToOneField(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True, related_name='created_by'
+    )
+    modified_by = models.OneToOneField(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True, related_name='modified_by'
+    )
 
     def __str__(self):
         return (f"""Supplier: {self.company_name}, email: {self.email}.""")
