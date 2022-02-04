@@ -1,12 +1,9 @@
-from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField, CurrentUserDefault
+from rest_framework.serializers import ModelSerializer
 from django_countries.serializers import CountryFieldMixin
 from apps.suppliers.models import Supplier
 
 
 class RegisterSupplierSerializer(CountryFieldMixin, ModelSerializer):
-
-    created_by = PrimaryKeyRelatedField(
-        read_only=True, default=CurrentUserDefault())
 
     class Meta:
         model = Supplier
