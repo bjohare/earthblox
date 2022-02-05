@@ -24,10 +24,10 @@ const getters = {
 
 const mutations = {
   login(state) {
-    state.loggedIn = true
+    state.loggedIn = true;
   },
   logout(state) {
-    state.loggedIn = false
+    state.loggedIn = false;
   },
   setProfile(state, payload) {
     state.profile = payload
@@ -43,10 +43,11 @@ const mutations = {
 const actions = {
   async postLogin({ dispatch, commit }, payload) {
     return authAxios.post("/api/users/login/", payload).then(response => {
+      commit('login');
       dispatch("getProfile");
     }).catch(e => {
-      context.commit('setAuthError', true)
-      console.log(e)
+      commit('setAuthError', true);
+      throw Error('Login failed.');
     });
   },
   async postLogout({ commit, dispatch }, vm) {
@@ -75,7 +76,7 @@ const actions = {
       .catch(e => { console.log(e) })
   },
   async getProfile(context) {
-    return await authAxios
+    return authAxios
       .get("/api/users/profile/")
       .then(response => {
         context.commit("login");

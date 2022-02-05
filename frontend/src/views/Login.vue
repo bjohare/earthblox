@@ -1,18 +1,17 @@
 <template>
-  <div class="login d-flex align-items-center">
-    <div class="container">
-      <b-row class="justify-content-center h-100">
-        <b-col md="8">
-          <b-card-group>
+  <div id="hero" class="container-fluid d-flex justify-content-center">
+      <b-row class="d-flex align-items-center">
+        <b-col>
             <b-card no-body class="p-4">
               <b-card-body>
                 <b-form>
-                  <h1>Login</h1>
-                  <p class="text-muted">Login to the EarthBlox Supplier Portal</p>
-                  <div
-                    class="alert alert-danger"
-                    v-show="invalidLogin"
-                  >Invalid username or password.</div>
+                  <b-img src="img/earthbloxlogo.png" fluid></b-img>
+                  <p class="text-muted">
+                    Login to the Earth Blox Drone Supplier Portal
+                  </p>
+                  <div class="alert alert-danger" v-show="invalidLogin">
+                    Invalid username or password.
+                  </div>
                   <b-input-group class="mb-3">
                     <b-form-input
                       name="email"
@@ -26,9 +25,7 @@
                       @input="invalidLogin = false"
                     />
                     <b-form-invalid-feedback id="email">
-                      <ul>
-                        <li v-for="error in errors.collect('email')" :key="error">{{ error }}</li>
-                      </ul>
+                      {{ errors.first('email')}}
                     </b-form-invalid-feedback>
                   </b-input-group>
                   <b-input-group class="mb-4">
@@ -37,17 +34,14 @@
                       type="password"
                       class="form-control"
                       placeholder="Password"
-                      autocomplete="current-password"
+                      autocomplete="password"
                       v-model="password"
                       v-validate="'required'"
                       :state="validateState('password')"
                       @input="invalidLogin = false"
-                      @keydown.enter.native="login()"
                     />
                     <b-form-invalid-feedback id="password">
-                      <ul>
-                        <li v-for="error in errors.collect('password')" :key="error">{{ error }}</li>
-                      </ul>
+                      {{ errors.first('password')}}
                     </b-form-invalid-feedback>
                   </b-input-group>
                   <b-row>
@@ -58,7 +52,7 @@
                         @click="login"
                         :disabled="errors.any()"
                       >
-                      <b-icon icon="power" aria-hidden="true"></b-icon> Login
+                        <b-icon icon="power" aria-hidden="true"></b-icon> Login
                       </b-button>
                     </b-col>
                     <b-col cols="6" class="text-right">
@@ -66,17 +60,16 @@
                         variant="link"
                         to="/account/password-reset"
                         class="px-0"
-                      >Forgot password?</b-button>
+                        >Forgot password?</b-button
+                      >
                     </b-col>
                   </b-row>
                 </b-form>
               </b-card-body>
             </b-card>
-          </b-card-group>
         </b-col>
       </b-row>
     </div>
-  </div>
 </template>
 
 <script>
@@ -88,7 +81,7 @@ export default {
     return {
       email: "",
       password: "",
-      invalidLogin: false
+      invalidLogin: false,
     };
   },
   mixins: [ValidationMixin],
@@ -99,22 +92,22 @@ export default {
           try {
             await this.$store.dispatch("postLogin", {
               email: this.email,
-              password: this.password
+              password: this.password,
             });
             this.$router.replace(this.$route.query.redirect || "/register");
           } catch (error) {
-            if (error) {
-              this.invalidLogin = true;
-            }
+            this.invalidLogin = true;
           }
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
-.login {
+#hero {
+  background-image: url("assets/login-drone-1.jpg");
+  background-size: cover;
   height: 100vh;
 }
 </style>
