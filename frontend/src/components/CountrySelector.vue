@@ -51,10 +51,5 @@ export default {
 .multiselect__placeholder {
   color: #212529;
   font-weight: 400;
-  font-size: 1.2em;
-}
-.multiselect__tags {
-  border: 1px solid #ced4da;
-  padding: 4px -40px 0px 11px;
 }
 </style>

@@ -1,8 +1,11 @@
 from django.shortcuts import render
+from rest_framework.views import APIView
 from apps.suppliers.models import Supplier
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from apps.suppliers.views.serializers import RegisterSupplierSerializer
+from django_countries.data import COUNTRIES
 
 
 class RegisterSupplierAPIView(CreateAPIView):
@@ -13,3 +16,13 @@ class RegisterSupplierAPIView(CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
+
+
+class CountryList(APIView):
+
+    permission_classes = [IsAuthenticated, ]
+
+    def get(self, request, format="json"):
+        countries = [{'code': code,  'label': label}
+                     for (code, label) in COUNTRIES.items()]
+        return Response(countries)

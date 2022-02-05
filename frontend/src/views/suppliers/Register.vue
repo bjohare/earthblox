@@ -1,7 +1,7 @@
 <template>
   <div id="hero" class="container-fluid d-flex justify-content-center">
     <b-row class="d-flex align-items-start mt-2">
-        <b-col cols="12" class="h-100">
+        <b-col class="form h-100">
             <b-card class="p-4">
               <b-card-body>
                 <b-img src="img/earthbloxlogo.png" fluid small></b-img>
@@ -158,6 +158,9 @@ export default {
   background-size: cover;
   height: 100vh;
 }
+.form {
+  width: 50vw;
+}
 .logout-btn {
   position: absolute;
   top: 10px;
@@ -165,5 +168,11 @@ export default {
 }
 .check {
   margin-right: 1em !important
+}
+
+@media (max-width: 768px) {
+  .form {
+    width: 90vw;
+  }
 }
 </style>

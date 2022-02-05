@@ -104,3 +104,18 @@ class RegisterSupplierAPIViewTest(APITestCase):
         response = self.get_response(data)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json() == {'certified': ['This field is required.']}
+
+
+class CountryListTest(APITestCase):
+
+    def test_get_countries_authenticated(self):
+        url = reverse('suppliers:countries-list')
+        self.client.login(username='demo@demo.com', password='demo')
+        response = self.client.get(url, format='json')
+        assert response.status_code == status.HTTP_200_OK
+        assert len(response.json()) == 249
+
+    def test_get_countries_anonymous_user(self):
+        url = reverse('suppliers:countries-list')
+        response = self.client.get(url, format='json')
+        assert response.status_code == status.HTTP_403_FORBIDDEN
