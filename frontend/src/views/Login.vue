@@ -5,7 +5,7 @@
             <b-card no-body class="p-4">
               <b-card-body>
                 <b-form>
-                  <b-img src="img/earthbloxlogo.png" fluid></b-img>
+                  <b-img src="img/earthbloxlogo.png" alt="Earth Blox Logo" fluid></b-img>
                   <p class="text-muted">
                     Login to the Earth Blox Drone Supplier Portal
                   </p>

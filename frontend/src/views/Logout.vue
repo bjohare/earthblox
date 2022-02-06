@@ -6,7 +6,7 @@
               <b-card-group>
                 <b-card no-body class="p-4">
                   <b-card-body>
-                    <b-img src="img/earthbloxlogo.png" fluid-grow></b-img>
+                    <b-img src="img/earthbloxlogo.png" alt="Earth Blox Logo" fluid-grow></b-img>
                     <p class="text-muted">Are you sure you want to logout?</p>
                     <b-row>
                       <b-col>

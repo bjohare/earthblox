@@ -4,7 +4,7 @@
         <b-col class="form h-100">
             <b-card class="p-4 mb-5" v-if="!formComplete">
               <b-card-body>
-                <b-img src="img/earthbloxlogo.png" fluid small></b-img>
+                <b-img src="img/earthbloxlogo.png" alt="Earth Blox Logo" fluid small></b-img>
                   <p class="text-muted">
                     Register as an Earth Blox Drone Imagery Supplier.
                   </p>
@@ -123,7 +123,7 @@
             </b-card>
             <b-card class="p-4" v-if="formComplete">
               <b-card-body>
-                <b-img src="img/earthbloxlogo.png" fluid small></b-img>
+                <b-img src="img/earthbloxlogo.png" alt="Earth Blox Logo" fluid small></b-img>
                   <h5 class="text-muted mt-3">
                     Thank you for registering with Earth Blox as a Drone Imagery Supplier.
                   </h5>
