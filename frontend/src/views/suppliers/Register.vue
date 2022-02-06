@@ -1,8 +1,8 @@
 <template>
-  <div id="hero" class="container-fluid d-flex justify-content-center">
+  <div id="hero" class="container-fluid d-flex justify-content-center flex-grow">
     <b-row class="d-flex align-items-start mt-2">
         <b-col class="form h-100">
-            <b-card class="p-4" v-if="!formComplete">
+            <b-card class="p-4 mb-5" v-if="!formComplete">
               <b-card-body>
                 <b-img src="img/earthbloxlogo.png" fluid small></b-img>
                   <p class="text-muted">
@@ -77,31 +77,30 @@
                       Please select at least one country of opperation.
                     </b-form-invalid-feedback>
                   </div>
-                  <!-- Consent input group -->
+                  <!-- Consent checkbox -->
                   <b-input-group class="mb-2">
                     <b-form-checkbox
-                      id="consent-check"
                       name="consent"
-                      class="check"
                       v-validate="'required:true'"
                       v-model="consent"
                     >
-                      <span class="text-muted ml-2"> I agree to the Earth Blox data retention policy.</span>
+                      <span class="text-muted"> I agree to the Earth Blox data retention policy.</span>
                     </b-form-checkbox>
                     <b-form-invalid-feedback id="consent-invalid" :state="validateState('consent')">
                       {{ errors.first('consent')}}
                     </b-form-invalid-feedback>
                   </b-input-group>
+
+
                   <!-- Consent input group -->
                   <b-input-group class="mb-2">
                     <b-form-checkbox
                       id="certified-check"
                       name="certified"
-                      class="ml-5"
                       v-validate="'required:true'"
                       v-model="certified"
                     >
-                      <span class="text-muted ml-2"> I am certified to operate drones in the selected jurisdictions.</span>
+                      <span class="text-muted"> I am certified to operate drones in the selected jurisdictions.</span>
                     </b-form-checkbox>
                     <b-form-invalid-feedback id="certified-invalid" :state="validateState('certified')">
                       {{  errors.first('certified') }}
@@ -115,7 +114,7 @@
                         @click="register"
                         :disabled="errors.any()"
                       >
-                        <b-icon icon="power" aria-hidden="true"></b-icon> Register
+                        Register
                       </b-button>
                     </b-col>
                   </b-row>
@@ -213,7 +212,7 @@ export default {
  #hero {
   background-image: url("../assets/login-drone-1.jpg");
   background-size: cover;
-  height: 100vh;
+  min-height: 100vh;
 }
 .form {
   width: 50vw;
@@ -222,9 +221,6 @@ export default {
   position: absolute;
   top: 10px;
   right: 10px;
-}
-.check {
-  margin-right: 1em !important
 }
 
 @media (max-width: 768px) {
