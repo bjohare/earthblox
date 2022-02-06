@@ -2,7 +2,7 @@
   <div id="hero" class="container-fluid d-flex justify-content-center">
     <b-row class="d-flex align-items-start mt-2">
         <b-col class="form h-100">
-            <b-card class="p-4">
+            <b-card class="p-4" v-if="!formComplete">
               <b-card-body>
                 <b-img src="img/earthbloxlogo.png" fluid small></b-img>
                   <p class="text-muted">
@@ -119,6 +119,16 @@
                 </b-form>
               </b-card-body>
             </b-card>
+            <b-card class="p-4" v-if="formComplete">
+              <b-card-body>
+                <b-img src="img/earthbloxlogo.png" fluid small></b-img>
+                  <h5 class="text-muted mt-3">
+                    Thank you for registering with Earth Blox as a Drone Imagery Supplier.
+                  </h5>
+                  <h5 class="text-muted">We will be in touch with you shortly at {{ supplier.email }}.</h5>
+                  <p class="text-muted">The Earth Blox Team.</p>
+              </b-card-body>
+            </b-card>
         </b-col>
     </b-row>
     <router-link :to="{name:'Logout'}">
@@ -147,6 +157,8 @@ export default {
       certified: false,
       datatypes: null,
       countries: null,
+      formComplete: false,
+      supplier: null,
     };
   },
   methods: {
@@ -171,7 +183,9 @@ export default {
             "certified": this.certified
           };
           try {
-            await this.$store.dispatch("postSupplierData", postData);
+            let response = await this.$store.dispatch("postSupplierData", postData);
+            this.supplier = response.data;
+            this.formComplete = true;
           }
           catch(error){
             console.log(error);

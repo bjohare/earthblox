@@ -33,7 +33,7 @@ const actions = {
   async postSupplierData(context, payload) {
     return authAxios.post('/api/suppliers/register/', payload)
       .then(response => {
-        console.log('Supplier registered.')
+        return response;
       });
   }
 }

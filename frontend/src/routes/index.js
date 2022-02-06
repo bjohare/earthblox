@@ -31,7 +31,7 @@ const routes = [
     meta: {
       requiresAuth: true
     }
-  }
+  },
 ];
 
 
@@ -44,16 +44,16 @@ const router = new VueRouter({
   routes
 });
 
-// router.beforeEach(async (to, from, next) => {
-//   if (to.matched.some(record => record.meta.requiresAuth)) {
-//     if (store.getters.isLoggedIn) {
-//       next();
-//     } else {
-//       next("/");
-//     }
-//   } else {
-//     next();
-//   }
-// });
+router.beforeEach(async (to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (store.getters.isLoggedIn) {
+      next();
+    } else {
+      next("/");
+    }
+  } else {
+    next();
+  }
+});
 
 export default router
