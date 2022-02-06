@@ -34,6 +34,8 @@ const actions = {
     return authAxios.post('/api/suppliers/register/', payload)
       .then(response => {
         return response;
+      }).catch(err => {
+        return err.response;
       });
   }
 }

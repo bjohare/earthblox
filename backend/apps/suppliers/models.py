@@ -35,7 +35,7 @@ class Supplier(TimeStampedModel):
         ]
 
     company_name = models.CharField(
-        max_length=150, verbose_name=_('Company Name'))
+        max_length=150, verbose_name=_('Company Name'), unique=True)
     contact_name = models.CharField(max_length=100)
     email = models.EmailField(verbose_name=_('Email'))
     datatypes = ArrayField(

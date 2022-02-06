@@ -111,6 +111,29 @@ class RegisterSupplierAPIViewTest(APITestCase):
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json() == {'certified': ['This field is required.']}
 
+    def test_duplicate_company_name_validation(self):
+        supp1 = {
+            'company_name': 'Test Company', 'contact_name': 'Test Contact',
+            'email': 'demo@demo.com', 'consent': True, 'certified': True,
+            'datatypes': ['GC'], 'countries': ['GB', 'IE', 'US'],
+            'created_by': self.user.email
+        }
+        supp2 = {
+            'company_name': 'Test Company', 'contact_name': 'Test Contact',
+            'email': 'demo@demo.com', 'consent': True, 'certified': True,
+            'datatypes': ['GC'], 'countries': ['GB', 'IE', 'US'],
+            'created_by': self.user.email
+        }
+        response = self.get_response(supp1)
+        # first supplier is created.
+        assert response.status_code == status.HTTP_201_CREATED
+
+        # second one fails.
+        response = self.get_response(supp2)
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.json() == {'company_name': [
+            'A company with this name already exists.']}
+
 
 class CountryListTest(APITestCase):
 

@@ -9,6 +9,9 @@
                     Register as an Earth Blox Drone Imagery Supplier.
                   </p>
                 <b-form>
+                  <b-alert show variant="danger" v-if="formInvalid">
+                    {{ formInvalidMessage }}
+                  </b-alert>
                   <!-- Company Name input group -->
                   <b-input-group class="mb-2">
                     <b-form-input
@@ -159,6 +162,8 @@ export default {
       countries: null,
       formComplete: false,
       supplier: null,
+      formInvalid: false,
+      formInvalidMessage: null,
     };
   },
   methods: {
@@ -182,14 +187,19 @@ export default {
             "consent": this.consent,
             "certified": this.certified
           };
-          try {
             let response = await this.$store.dispatch("postSupplierData", postData);
-            this.supplier = response.data;
-            this.formComplete = true;
-          }
-          catch(error){
-            console.log(error);
-          }
+            if (response.status == 201){
+              this.supplier = response.data;
+              this.formComplete = true;
+            }
+            else if(response.status == 400){
+              this.formInvalid = true;
+              this.formInvalidMessage = response.data.company_name[0];
+            }
+            else {
+              // todo: render error component
+              console.log('Error processing form.');
+            }
         }
         else {
           console.log('Invalid registration form.');
