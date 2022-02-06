@@ -134,7 +134,7 @@
         </b-col>
     </b-row>
     <router-link :to="{name:'Logout'}">
-      <b-button id="cancelLogout" variant="danger" class="logout-btn ml-3">Logout</b-button>
+      <b-button id="logout" variant="danger" class="logout-btn ml-3">Logout</b-button>
     </router-link>
   </div>
 </template>
@@ -226,6 +226,15 @@ export default {
 @media (max-width: 768px) {
   .form {
     width: 90vw;
+  }
+  .logout-btn {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .form {
+    width: 80vw;
   }
 }
 </style>
