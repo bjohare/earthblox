@@ -1,7 +1,7 @@
 <template>
   <div>
     <multiselect id="datatypes" v-model="selections" :options="options" track-by="code" label="label"
-    :allow-empty="false" :multiple="true"
+    :allow-empty="true" :multiple="true"
     :close-on-select="true"
     >
       <template slot="placeholder" class="placeholder"><span class="text-muted">Select data collection types</span></template>

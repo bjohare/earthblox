@@ -6,6 +6,9 @@ from apps.users.models import User
 
 class RegisterSupplierAPIViewTest(APITestCase):
 
+    def setUp(self):
+        self.user = User.objects.get(email='demo@demo.com')
+
     def get_response(self, data, authenticate=True):
         url = reverse('suppliers:register-supplier')
         if authenticate:
@@ -24,12 +27,11 @@ class RegisterSupplierAPIViewTest(APITestCase):
             'detail': 'Authentication credentials were not provided.'}
 
     def test_create_supplier(self):
-        user = User.objects.get(email='demo@demo.com')
         data = {
             'company_name': 'Test Company', 'contact_name': 'Test Contact',
             'email': 'demo@demo.com', 'consent': True, 'certified': True,
             'datatypes': ['GC'], 'countries': ['GB', 'IE', 'US'],
-            'created_by': user.id
+            'created_by': 'demo@demo.com'
         }
         response = self.get_response(data)
         assert response.status_code == status.HTTP_201_CREATED
@@ -38,8 +40,7 @@ class RegisterSupplierAPIViewTest(APITestCase):
                                    "email": "demo@demo.com",
                                    "datatypes": ["GC"],
                                    "countries": ["GB", "IE", "US"],
-                                   "consent": True, "certified": True,
-                                   'created_by': user.id, 'modified_by': None}
+                                   "consent": True, "certified": True}
 
     def test_create_supplier_with_missing_data(self):
         """Test for missing fields."""
@@ -47,14 +48,15 @@ class RegisterSupplierAPIViewTest(APITestCase):
         # missing company_name, contact_name, email
         data = {
             'consent': True, 'certified': True,
-            'datatypes': ['GC'], 'countries': ['GB', 'IE', 'US']
+            'datatypes': ['GC'], 'countries': ['GB', 'IE', 'US'],
+            'created_by': self.user.email
         }
         response = self.get_response(data)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json() == {
             'email': ['This field is required.'],
             'company_name': ['This field is required.'],
-            'contact_name': ['This field is required.']
+            'contact_name': ['This field is required.'],
         }
 
     def test_create_supplier_with_invalid_datatype(self):
@@ -62,7 +64,8 @@ class RegisterSupplierAPIViewTest(APITestCase):
         data = {
             'company_name': 'Test Company', 'contact_name': 'Test Contact',
             'consent': True, 'certified': True, 'email': 'demo@demo.com',
-            'datatypes': ['XY'], 'countries': ['GB', 'IE', 'US']
+            'datatypes': ['XY'], 'countries': ['GB', 'IE', 'US'],
+            'created_by': self.user.email
         }
         response = self.get_response(data)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -74,7 +77,8 @@ class RegisterSupplierAPIViewTest(APITestCase):
         data = {
             'company_name': 'Test Company', 'contact_name': 'Test Contact',
             'consent': True, 'certified': True, 'email': 'demo@demo.com',
-            'datatypes': ['GC'], 'countries': ['XY']
+            'datatypes': ['GC'], 'countries': ['XY'],
+            'created_by': self.user.email
         }
         response = self.get_response(data)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -87,7 +91,8 @@ class RegisterSupplierAPIViewTest(APITestCase):
         data = {
             'company_name': 'Test Company', 'contact_name': 'Test Contact',
             'certified': True, 'email': 'demo@demo.com',
-            'datatypes': ['GC'], 'countries': ['GB', 'IE', 'US']
+            'datatypes': ['GC'], 'countries': ['GB', 'IE', 'US'],
+            'created_by': self.user.email
         }
         response = self.get_response(data)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -99,7 +104,8 @@ class RegisterSupplierAPIViewTest(APITestCase):
         data = {
             'company_name': 'Test Company', 'contact_name': 'Test Contact',
             'consent': True, 'email': 'demo@demo.com',
-            'datatypes': ['GC'], 'countries': ['GB', 'IE', 'US']
+            'datatypes': ['GC'], 'countries': ['GB', 'IE', 'US'],
+            'created_by': self.user.email
         }
         response = self.get_response(data)
         assert response.status_code == status.HTTP_400_BAD_REQUEST

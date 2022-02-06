@@ -66,6 +66,14 @@
                       Please select at least one drone data collection type.
                     </b-form-invalid-feedback>
                   </div>
+                  <!-- Country Selector -->
+                  <!-- DataType Selector -->
+                  <div class="mb-2">
+                    <country-selector id="countries" name="countries" v-model="countries" v-validate="'required'"></country-selector>
+                    <b-form-invalid-feedback id="countries-invalid" :state="validateState('countries')">
+                      Please select at least one country of opperation.
+                    </b-form-invalid-feedback>
+                  </div>
                   <!-- Consent input group -->
                   <b-input-group class="mb-2">
                     <b-form-checkbox
@@ -121,12 +129,14 @@
 <script>
 import { ValidationMixin } from "@/components/mixins/ValidationMixin";
 import DataTypeSelector   from "@/components/DataTypeSelector";
+import CountrySelector from "@/components/CountrySelector"
 
 export default {
   name: 'Register',
   mixins: [ValidationMixin],
   components: {
-    "dataTypeSelector": DataTypeSelector
+    "dataTypeSelector": DataTypeSelector,
+    "countrySelector": CountrySelector
   },
   data() {
     return {
@@ -136,13 +146,36 @@ export default {
       consent: false,
       certified: false,
       datatypes: null,
+      countries: null,
     };
   },
   methods: {
     register() {
       this.$validator.validateAll().then(async () => {
         if (!this.errors.any()) {
-          console.log('Valid registration form. Posting.');
+          let datatypeCodes = [];
+          let countryCodes = [];
+          for(let dt of this.datatypes){
+            datatypeCodes.push(dt.code);
+          }
+          for(let cc of this.countries){
+            countryCodes.push(cc.code);
+          }
+          let postData = {
+            "company_name": this.company,
+            "contact_name": this.contact,
+            "email": this.email,
+            "datatypes": datatypeCodes,
+            "countries": countryCodes,
+            "consent": this.consent,
+            "certified": this.certified
+          };
+          try {
+            await this.$store.dispatch("postSupplierData", postData);
+          }
+          catch(error){
+            console.log(error);
+          }
         }
         else {
           console.log('Invalid registration form.');

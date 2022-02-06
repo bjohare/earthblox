@@ -1,10 +1,10 @@
 <template>
   <div>
-    <multiselect id="datatypes" v-model="selections" :options="options" track-by="code" label="label"
-    :allow-empty="false" :multiple="true"
+    <multiselect id="countries" v-model="selections" :options="options" track-by="code" label="label"
+    :allow-empty="true" :multiple="true"
     :close-on-select="true"
     >
-      <template slot="placeholder" class="placeholder"><span class="text-muted">Select data collection types</span></template>
+      <template slot="placeholder" class="placeholder"><span class="text-muted">Select countries of operation</span></template>
     </multiselect>
   </div>
 </template>
@@ -21,28 +21,21 @@ export default {
       set(val) {
         this.$emit('input', val);
       }
+    },
+    options(){
+      return this.$store.getters["getCountries"];
     }
   },
   components: {
     Multiselect
   },
-  data() {
-    return {
-      options: [
-        {code: 'GP', label: 'Geotagged Photos'},
-        {code: 'DP', label: 'Drone Photography'},
-        {code: 'GC', label: 'Ground Control Points'},
-        {code: 'DV', label: 'Drone Video'},
-        {code: 'DL', label: 'Drone Lidar'},
-        {code: 'DR', label: 'Drone Radar'},
-        {code: 'AV', label: 'Aerial Video'},
-        {code: 'AR', label: 'Aerial Radar'},
-        {code: 'AL', label: 'Aerial Lidar'},
-        {code: 'AP', label: 'Aerial Photo'},
-        {code: 'SP', label: 'Stereo Photo'},
-        {code: 'OT', label: 'Other'},
-      ]
+  methods: {
+    async getCountryList(){
+      await this.$store.dispatch("getCountryList");
     }
+  },
+  created(){
+    this.getCountryList();
   }
 }
 </script>

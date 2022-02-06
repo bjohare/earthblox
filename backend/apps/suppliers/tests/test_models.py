@@ -6,9 +6,6 @@ from apps.users.models import User
 
 class TestSupplier(TestCase):
 
-    def setUp(self):
-        self.user = User.objects.get(email='demo@demo.com')
-
     def test_create_supplier(self):
         """Tests model creation with valid data."""
 
@@ -74,12 +71,12 @@ class TestSupplier(TestCase):
             'company_name': 'Test Company', 'contact_name': 'Test Contact',
             'email': 'demo@demo.com', 'countries': ['GB', 'US'],
             'datatypes': ['GP', 'GC'], 'consent': True, 'certified': True,
-            'created_by': self.user
+            'created_by': 'demo@demo.com'
         }
         supplier = Supplier(**data)
         supplier.save()
         supplier.refresh_from_db()
-        assert supplier.created_by == self.user
+        assert supplier.created_by == 'demo@demo.com'
 
     def test_datatypes_enum(self):
         geotagged_photos = Supplier.DATATYPES.get_value('geotagged_photos')

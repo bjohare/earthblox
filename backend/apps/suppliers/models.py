@@ -50,16 +50,8 @@ class Supplier(TimeStampedModel):
         multiple=True, verbose_name=_('Operating Countries'), default="GB")
     consent = models.BooleanField(verbose_name=_('Consent'))
     certified = models.BooleanField(verbose_name=_('Certified'))
-    created_by = models.OneToOneField(
-        to=settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True, related_name='created_by'
-    )
-    modified_by = models.OneToOneField(
-        to=settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True, related_name='modified_by'
-    )
+    created_by = models.CharField(max_length=150)
+    modified_by = models.CharField(max_length=150, blank=True, null=True)
 
     def __str__(self):
         return (f"""Supplier: {self.company_name}, email: {self.email}.""")

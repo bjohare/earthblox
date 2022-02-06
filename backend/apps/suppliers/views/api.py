@@ -4,6 +4,7 @@ from apps.suppliers.models import Supplier
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from apps.suppliers.views.serializers import RegisterSupplierSerializer
 from django_countries.data import COUNTRIES
 
@@ -15,7 +16,8 @@ class RegisterSupplierAPIView(CreateAPIView):
     queryset = Supplier.objects.all()
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
+        email = self.request.user.email
+        serializer.save(created_by=email, modified_by=email)
 
 
 class CountryList(APIView):
