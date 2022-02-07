@@ -44,7 +44,7 @@ The following scores were achieved using the Chrome Lighthouse reporting tool. A
 
 ## Testing
 
-The backend code is tested to 100% code coverage. Backend tests can be run by doing `./runtests` from a terminal. By default all tests are run. To run an individual test class, eg API tests do `./runtests apps/suppliers/tests/test_api.py::RegisterSupplierAPIViewTest`. To generate a coverage report on the console, first run all tests `./runtests`, then run `./coverage`. These testing scripts make testing integration with CI/CD services such as CirceCI trivial.
+The backend code is tested to 100% code coverage. Backend tests can be run by doing `./runtests` from a terminal. By default all tests are run. To run an individual test class, eg API tests do `./runtests apps/suppliers/tests/test_api.py::RegisterSupplierAPIViewTest`. To generate a coverage report on the console, first run all tests `./runtests`, then run `./coverage`.
 
 ## Deployment
 
