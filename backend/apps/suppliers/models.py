@@ -1,5 +1,4 @@
 from django.db import models
-from django.conf import settings
 from django.utils.translation import gettext as _
 from model_utils.models import TimeStampedModel
 from django.contrib.postgres.fields import ArrayField
@@ -8,6 +7,8 @@ from enum import Enum
 
 
 class Supplier(TimeStampedModel):
+    """Model to hold Earth Blox drone supplier registrations.
+    """
 
     # defines permissible choices for datatypes field
     class DATATYPES(Enum):

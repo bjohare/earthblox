@@ -1,10 +1,11 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from apps.suppliers.models import Supplier
-from apps.users.models import User
 
 
 class TestSupplier(TestCase):
+    """Test cases for Supplier model.
+    """
 
     def test_create_supplier(self):
         """Tests model creation with valid data."""
@@ -67,6 +68,8 @@ class TestSupplier(TestCase):
             assert message == ['“None” value must be either True or False.']
 
     def test_create_supplier_with_created_by_user(self):
+        """Tests that user data added to supplier model."""
+
         data = {
             'company_name': 'Test Company', 'contact_name': 'Test Contact',
             'email': 'demo@demo.com', 'countries': ['GB', 'US'],
@@ -79,5 +82,7 @@ class TestSupplier(TestCase):
         assert supplier.created_by == 'demo@demo.com'
 
     def test_datatypes_enum(self):
+        """Test for Supplier.DATATYPES."""
+
         geotagged_photos = Supplier.DATATYPES.get_value('geotagged_photos')
         assert geotagged_photos == 'GP'
